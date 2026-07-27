@@ -1,0 +1,56 @@
+version: '3.8'
+services:
+  frontend:
+    container_name: Angular-1
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    environment:
+      - NG_CLI_ANALYTICS=false
+
+  backend:
+    build: ./backend
+    container_name: Backend-1
+    ports:
+      - "5000:8080"
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=db;Database=db1;User Id=sa;Password=YourStrong!Password123;TrustServerCertificate=True;
+      - Redis__Host=redis
+    depends_on:
+      - db
+      - redis
+
+
+  db:
+      image: mcr.microsoft.com/mssql/server:2022-latest
+      container_name: mssql-1
+      user: root
+      environment:
+        MSSQL_SA_PASSWORD: "YourStrong!Password123"
+        ACCEPT_EULA: "Y"
+      ports:
+        - "1433:1433"
+      volumes:
+        - mssql_data:/var/opt/mssql/data
+
+  
+  redis:
+    image: redis:alpine
+    container_name: Redis-1
+    ports:
+      - "6379:6379"
+
+  adminer:
+    image: adminer:latest
+    container_name: Adminer-1
+    restart: always
+    ports:
+      - "8081:8080"
+      
+volumes:
+  mssql_data:

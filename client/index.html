@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My First Docker App</title>
+</head>
+<body>
+    <h1>Hello from Mohammad's Docker Container!</h1>
+
+    <form action="http://localhost:5000/add-user" method="POST">
+      <input type="text" name="name" placeholder="Enter name" required>
+        <button type="submit">Save</button>
+    </form>
+
+
+    <!-- Inside your frontend index.html -->
+<div id="counter-box">
+  <h3>Page Views: <span id="view-count">Loading...</span></h3>
+</div>
+
+<script>
+  // Fetch stats from backend as soon as page loads
+  fetch('http://localhost:5000/api/stats')
+    .then(response => response.json())
+    .then(data => {
+      // Update the HTML text with the value stored in Redis
+      document.getElementById('view-count').innerText = data.total_page_loads;
+    })
+    .catch(error => console.error('Error fetching views:', error));
+</script>
+</body>
+</html>
